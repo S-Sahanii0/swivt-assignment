@@ -7,12 +7,14 @@ class NewsCard extends StatelessWidget {
   final String? imageUrl;
   final String? title;
   final String? source;
+  final VoidCallback onTapArrow;
 
   const NewsCard(
       {Key? key,
       required this.imageUrl,
       required this.title,
-      required this.source})
+      required this.source,
+      required this.onTapArrow})
       : super(key: key);
 
   @override
@@ -82,11 +84,14 @@ class NewsCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         maxLines: 3,
                       ),
-                      const Align(
+                      Align(
                         alignment: Alignment.bottomRight,
-                        child: Icon(
-                          Icons.arrow_forward,
-                          color: AppColors.darkBlueShade2,
+                        child: GestureDetector(
+                          onTap: onTapArrow,
+                          child: const Icon(
+                            Icons.arrow_forward,
+                            color: AppColors.darkBlueShade2,
+                          ),
                         ),
                       )
                     ],

@@ -12,7 +12,7 @@ class NewsService {
           'https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=d87a7101da274ef0925465618d54f20e');
       final listOfNews = data['articles'] as List;
       return listOfNews.map((e) => NewsModel.fromJson(json.encode(e))).toList();
-    } catch (e, stk) {
+    } catch (e) {
       return null;
     }
   }

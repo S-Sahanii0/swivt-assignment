@@ -11,3 +11,25 @@ AppBar buildCustomAppBar({required String pageTitle}) => AppBar(
             AppStyle.semiBoldText16.copyWith(color: AppColors.darkBlueShade2),
       ),
     );
+
+AppBar buildCustomAppBarWithBack(
+        {required String pageTitle, required BuildContext context}) =>
+    AppBar(
+      backgroundColor: AppColors.appWhite,
+      centerTitle: true,
+      title: Text(
+        pageTitle,
+        style:
+            AppStyle.semiBoldText16.copyWith(color: AppColors.darkBlueShade2),
+      ),
+      leading: GestureDetector(
+        onTap: () {
+          Navigator.of(context).pop();
+        },
+        child: const Icon(
+          Icons.chevron_left_outlined,
+          color: AppColors.appBlack,
+          size: 24,
+        ),
+      ),
+    );

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:swivt_assignment/app/theme/app_colors.dart';
-import 'package:swivt_assignment/app/theme/app_styles.dart';
 import 'package:swivt_assignment/components/custom_app_bar.dart';
 
 import 'package:swivt_assignment/features/news/bloc/news_bloc.dart';
+import 'package:swivt_assignment/features/news/views/news_detail_screen.dart';
 import 'package:swivt_assignment/features/news/views/widgets/news_card.dart';
 
 class NewsScreen extends StatefulWidget {
@@ -53,9 +53,17 @@ class _NewsScreenState extends State<NewsScreen> {
                   itemBuilder: (context, index) {
                     final news = state.newsList[index];
                     return NewsCard(
-                        imageUrl: news.urlToImage ?? '',
-                        title: news.title ?? '',
-                        source: news.source ?? '');
+                      imageUrl: news.urlToImage ?? '',
+                      title: news.title ?? '',
+                      source: news.source ?? '',
+                      onTapArrow: () {
+                        Navigator.of(context).pushNamed(NewsDetailScreen.route,
+                            arguments: <String, dynamic>{
+                              'index': index,
+                              'newsList': state.newsList
+                            });
+                      },
+                    );
                   });
             } else {
               return const Center(
