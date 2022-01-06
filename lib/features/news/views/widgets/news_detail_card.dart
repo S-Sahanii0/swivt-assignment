@@ -48,7 +48,7 @@ class NewsDetailCard extends StatelessWidget {
                   ),
                   border: Border.all(
                     width: 2,
-                    color: AppColors.yellowShade4,
+                    color: AppColors.darkBlueShade2,
                     style: BorderStyle.solid,
                   ),
                   borderRadius: BorderRadius.circular(10),
