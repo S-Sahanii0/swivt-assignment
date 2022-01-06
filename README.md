@@ -8,4 +8,4 @@ This project is a starting point for a Flutter application.
 
 ## App Demo
 
-[![Watch the demo](./resource/demo.mov)]
+https://gifs.com/gif/app-demo-WPp6qo
