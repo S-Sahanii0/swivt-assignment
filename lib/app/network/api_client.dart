@@ -5,9 +5,9 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:swivt_assignment/utils/app_exceptions.dart';
+import 'package:swivt_assignment/app/exceptions/app_exceptions.dart';
 
-import 'app_logger.dart';
+import '../../utils/app_logger.dart';
 
 class ApiClient {
   //Doing this will use same instance all over the app

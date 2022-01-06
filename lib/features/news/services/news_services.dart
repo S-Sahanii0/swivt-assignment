@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:swivt_assignment/features/news/models/news_model.dart';
-import 'package:swivt_assignment/utils/api_client.dart';
+import 'package:swivt_assignment/app/network/api_client.dart';
 
 class NewsService {
   final _apiClient = ApiClient();
