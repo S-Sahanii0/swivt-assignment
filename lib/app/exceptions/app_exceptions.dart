@@ -14,6 +14,11 @@ class FetchDataException extends AppException {
       : super(message, 'Error During Communication: ');
 }
 
+class RateLimitException extends AppException {
+  RateLimitException([String? message])
+      : super(message, 'Too many requests sent ');
+}
+
 class BadRequestException extends AppException {
   BadRequestException([String? message]) : super(message, 'Invalid Request: ');
 }

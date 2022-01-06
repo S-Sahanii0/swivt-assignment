@@ -12,11 +12,19 @@ class NewsLoading extends NewsState {}
 
 class NewsLoadSuccess extends NewsState {
   final List<NewsModel> newsList;
+  final bool hasReachedMax;
 
-  NewsLoadSuccess({required this.newsList});
+  NewsLoadSuccess({this.hasReachedMax = false, required this.newsList});
 
   @override
   List<Object?> get props => newsList;
 }
 
-class NewsLoadFailure extends NewsState {}
+class NewsLoadFailure extends NewsState {
+  final String errorMessage;
+
+  NewsLoadFailure({required this.errorMessage});
+
+  @override
+  List<Object?> get props => [errorMessage];
+}

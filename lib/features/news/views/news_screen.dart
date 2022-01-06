@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:swivt_assignment/app/theme/app_colors.dart';
+import 'package:swivt_assignment/app/theme/app_styles.dart';
 import 'package:swivt_assignment/components/custom_app_bar.dart';
 
 import 'package:swivt_assignment/features/news/bloc/news_bloc.dart';
@@ -19,6 +20,7 @@ class NewsScreen extends StatefulWidget {
 }
 
 class _NewsScreenState extends State<NewsScreen> {
+  final ScrollController _scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -30,13 +32,48 @@ class _NewsScreenState extends State<NewsScreen> {
     return Scaffold(
         backgroundColor: AppColors.appWhite,
         appBar: buildCustomAppBar(pageTitle: 'Business News'),
-        body: BlocBuilder<NewsBloc, NewsState>(
-          builder: (context, state) {
-            if (state is NewsInitial || state is NewsLoading) {
-              return const Center(child: CircularProgressIndicator());
+        body: BlocConsumer<NewsBloc, NewsState>(
+          listener: (context, state) {
+            if (state is NewsLoadFailure) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  duration: Duration(hours: 1),
+                  backgroundColor: AppColors.greyShade3,
+                  content: Row(
+                    children: [
+                      Text(
+                        state.errorMessage,
+                        style: AppStyle.mediumText14
+                            .copyWith(color: AppColors.darkBlueShade1),
+                      ),
+                      Spacer(),
+                      GestureDetector(
+                        onTap: () {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          BlocProvider.of<NewsBloc>(context)
+                              .add(GetNewsEvent());
+                        },
+                        child: Text(
+                          'Retry',
+                          style: AppStyle.boldText16
+                              .copyWith(color: AppColors.darkBlueShade1),
+                        ),
+                      ),
+                    ],
+                  )));
             }
+          },
+          buildWhen: (previous, current) => !(current is NewsLoadFailure),
+          builder: (context, state) {
             if (state is NewsLoadSuccess) {
               return ListView.separated(
+                  controller: _scrollController
+                    ..addListener(() {
+                      if (_scrollController.offset ==
+                          _scrollController.position.maxScrollExtent) {
+                        BlocProvider.of<NewsBloc>(context)
+                            .add(LoadMoreNewsEvent());
+                      }
+                    }),
                   padding: EdgeInsets.only(top: 16.h),
                   separatorBuilder: (BuildContext context, int index) {
                     return const ColoredBox(
@@ -49,26 +86,29 @@ class _NewsScreenState extends State<NewsScreen> {
                           ),
                         ));
                   },
-                  itemCount: state.newsList.length,
+                  itemCount: state.newsList.length + 1,
                   itemBuilder: (context, index) {
-                    final news = state.newsList[index];
-                    return NewsCard(
-                      imageUrl: news.urlToImage ?? '',
-                      title: news.title ?? '',
-                      source: news.source ?? '',
-                      onTapArrow: () {
-                        Navigator.of(context).pushNamed(NewsDetailScreen.route,
-                            arguments: <String, dynamic>{
-                              'index': index,
-                              'newsList': state.newsList
-                            });
-                      },
-                    );
+                    if (index >= state.newsList.length) {
+                      return Center(child: CircularProgressIndicator());
+                    } else {
+                      final news = state.newsList[index];
+                      return NewsCard(
+                        imageUrl: news.urlToImage ?? '',
+                        title: news.title ?? '',
+                        source: news.source ?? '',
+                        onTapArrow: () {
+                          Navigator.of(context).pushNamed(
+                              NewsDetailScreen.route,
+                              arguments: <String, dynamic>{
+                                'index': index,
+                                'newsList': state.newsList
+                              });
+                        },
+                      );
+                    }
                   });
             } else {
-              return const Center(
-                child: Text('Something went wrong'),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
           },
         ));

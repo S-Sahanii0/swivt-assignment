@@ -1,12 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:swivt_assignment/app/exceptions/app_exceptions.dart';
-
 import '../../utils/app_logger.dart';
 
 class ApiClient {
@@ -33,32 +29,14 @@ class ApiClient {
     Map<String, dynamic> responseJson;
     try {
       final response = await _dio.get<dynamic>(url);
+      print(response.statusCode);
       responseJson = _returnMapResponse(response);
     } on SocketException {
       throw FetchDataException('No Internet connection');
+    } on DioError {
+      throw RateLimitException();
     }
     return responseJson;
-  }
-
-  String _returnListResponse(Response response) {
-    switch (response.statusCode) {
-      case 200:
-      case 201:
-      case 204:
-        final responseJson = jsonEncode(response.data);
-        log(responseJson);
-        return responseJson;
-      case 400:
-        throw BadRequestException(response.data.toString());
-      case 401:
-      case 404:
-        throw UnauthorisedException(response.data.toString());
-      case 500:
-      default:
-        throw FetchDataException(
-          'Error occured while Communication with Server with StatusCode : ${response.statusCode}',
-        );
-    }
   }
 }
 
@@ -78,6 +56,9 @@ Map<String, dynamic> _returnMapResponse(Response response) {
     case 401:
     case 404:
       throw UnauthorisedException(response.data.toString());
+    case 426:
+    case 429:
+      throw RateLimitException(response.data.toString());
     case 500:
     default:
       throw FetchDataException(

@@ -17,13 +17,14 @@ void main() {
       EquatableConfig.stringify =
           true; //to make bloc state and parameters pretty
       mockNewsService = MockUserRepository();
-      when(() => mockNewsService.getNewsDetails()).thenAnswer((_) async => ([
-            NewsModel(
-                source: 'test',
-                author: 'test',
-                description: 'test',
-                title: 'test')
-          ]));
+      when(() => mockNewsService.getNewsDetails(page: 1)).thenAnswer(
+          (_) async => ([
+                NewsModel(
+                    source: 'test',
+                    author: 'test',
+                    description: 'test',
+                    title: 'test')
+              ]));
     },
     build: () {
       return NewsBloc(newsService: mockNewsService);
